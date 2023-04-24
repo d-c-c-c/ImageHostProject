@@ -13,15 +13,19 @@
   <body>
     <!-- Add the "container" class to the header and main sections -->
     <header class="container">
-      <div class="d-flex justify-content-between align-items-center">
-        <h1 class="mb-0">Image Host</h1>
-        <nav>
-          <ul class="list-inline mb-0">
-            <li class="list-inline-item"><a href="#">Home</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+    <div class="d-flex align-items-center">
+      <h1 class="mb-0 mr-auto">Image Host</h1> <!-- Use me-auto class for margin-right (end) spacing -->
+      <nav>
+        <ul class="list-inline mb-0">
+          <!-- <li class="list-inline-item"><a href="#">Home</a></li> -->
+          <li class="list-inline-item"><a href="login-form.php">Log In</a></li>
+          <li class="list-inline-item"><a href="signup-form.php">Sign Up</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
     <main>
         <div class="container">
             <div class="row">
