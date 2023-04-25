@@ -1,6 +1,13 @@
 <?php
-    require('connect-db.php');
-    require('db-logic.php');
+
+  require('connect-db.php');
+  require('db-logic.php');
+
+  if($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if(!empty($_POST['logOutBtn'])) {
+        logOut();
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -19,9 +26,17 @@
       <nav>
         <ul class="list-inline mb-0">
           <!-- <li class="list-inline-item"><a href="#">Home</a></li> -->
-          <li class="list-inline-item"><a href="login-form.php">Log In</a></li>
-          <li class="list-inline-item"><a href="signup-form.php">Sign Up</a></li>
+          <?php 
+          if(isset($_SESSION['email'])) {
+            echo '<li class="list-inline-item">Welcome, '.$_SESSION['username'].'!</li>';
+            echo '<li class="list-inline-item"><form method="post"><button type="submit" class="btn btn-dark" name="logOutBtn" value="log out">Log Out</button></form></li>';
+          } else {
+          echo '<li class="list-inline-item"><a href="login-form.php">Log In</a></li>';
+          echo'<li class="list-inline-item"><a href="signup-form.php">Sign Up</a></li>';
+          }
+          ?>
         </ul>
+        
       </nav>
     </div>
   </header>
