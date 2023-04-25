@@ -1,5 +1,6 @@
 <?php
     require('connect-db.php');
+    require('db-logic.php');
 ?>
 
 <!DOCTYPE html>
