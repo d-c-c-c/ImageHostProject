@@ -30,23 +30,27 @@ function login($email, $password) {
     global $db;
     //PROBLEM: Email, is in profile table, username and password are in users table. It is inconvient to query the two
     //at best, and extremely difficuly at worst
-    $query = "SELECT * FROM profile WHERE email = :email";
+    $query = "SELECT * FROM profile NATURAL JOIN users WHERE email = :email";
     $stmt = $db->prepare($query);
     $stmt->bindValue(":email", $email);
-
+    echo $email;
     try {
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
+        // echo $row['email'];
+        // echo $row['username'];
         if ($row) {
             // Verify password
-            if (password_verify($password, $row['password'])) {
+            //Come back and use password_verify
+            //Make a function to encrypt a password on sign up
+            if ($password == $row['password']) {
                 // Password is correct, set session variables
                 $_SESSION['email'] = $row['email'];
-                //$_SESSION['username'] = $row['username'];
-                //TODO: Get info for karma 
+                $_SESSION['username'] = $row['username'];
+                $_SESSION['karma'] = $row['karma'];
 
-                header("url=index.php");
+                echo "<div class='alert alert-success' style='margin-top:10px'>You are now logged in!</div>";
+                header("refresh:1;url=index.php");
             } else {
                 // Incorrect password
                 echo "<div class='alert alert-danger' style='margin-top:10px'>Incorrect password. Please try again.</div>";

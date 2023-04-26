@@ -5,7 +5,7 @@
 
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
         if(!empty($_POST['loginBtn'])) {
-            login($_POST['username'], $_POST['email'], $_POST['password']);
+            login($_POST['email'], $_POST['password']);
         }
     }
 ?>
