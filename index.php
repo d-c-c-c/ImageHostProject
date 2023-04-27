@@ -1,5 +1,13 @@
 <?php
-    require('connect-db.php');
+
+  require('connect-db.php');
+  require('db-logic.php');
+
+  if($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if(!empty($_POST['logOutBtn'])) {
+        logOut();
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -13,15 +21,27 @@
   <body>
     <!-- Add the "container" class to the header and main sections -->
     <header class="container">
-      <div class="d-flex justify-content-between align-items-center">
-        <h1 class="mb-0">Image Host</h1>
-        <nav>
-          <ul class="list-inline mb-0">
-            <li class="list-inline-item"><a href="#">Home</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+    <div class="d-flex align-items-center">
+      <h1 class="mb-0 mr-auto">Image Host</h1> <!-- Use me-auto class for margin-right (end) spacing -->
+      <nav>
+        <ul class="list-inline mb-0">
+          <!-- <li class="list-inline-item"><a href="#">Home</a></li> -->
+          <?php 
+          if(isset($_SESSION['email'])) {
+            echo '<li class="list-inline-item">Welcome, '.$_SESSION['username'].'!</li>';
+            echo '<li class="list-inline-item"><form method="post"><button type="submit" class="btn btn-dark" name="logOutBtn" value="log out">Log Out</button></form></li>';
+          } else {
+          echo '<li class="list-inline-item"><a href="login-form.php">Log In</a></li>';
+          echo'<li class="list-inline-item"><a href="signup-form.php">Sign Up</a></li>';
+          }
+          ?>
+        </ul>
+        
+      </nav>
+    </div>
+  </header>
+
+
     <main>
         <div class="container">
             <div class="row">
