@@ -6,9 +6,9 @@
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
         if(!empty($_POST['signupBtn'])) {
             signUp($_POST['username'], $_POST['email'], $_POST['password']);
-            $_SESSION['username'] = $_POST['username'];
-            $_SESSION['email'] = $_POST['email'];
-            $_SESSION['karma'] = 0;
+            // $_SESSION['username'] = $_POST['username'];
+            // $_SESSION['email'] = $_POST['email'];
+            // $_SESSION['karma'] = 0;
         }
     }
 ?>
