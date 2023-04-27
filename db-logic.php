@@ -3,20 +3,19 @@ session_start();
 
 function signUp($username, $email, $password) {
     global $db;
-    $profileQuery = "INSERT INTO profile (email, password) VALUES(:email, :password)";
-    $usersQuery = "INSERT INTO users (username, karma) VALUES(:username, :karma)";
-
-    $pStmt = $db->prepare($profileQuery);//profile statement
-    $pStmt->bindValue(":email", $email);
-    $pStmt->bindValue(":password",$password);
+    $usersQuery = "INSERT INTO users (username, email, password, karma) VALUES(:username, :email, :password, :karma)";
 
     $uStmt = $db->prepare($usersQuery); //users statement
     $uStmt->bindValue(":username",$username);
+    $uStmt->bindValue(":email", $email);
+    $uStmt->bindValue(":password",$password);
     $uStmt->bindValue(":karma",0);
 
     try {
-        $pStmt->execute();
         $uStmt->execute();
+        $_SESSION['email'] = $email;
+        $_SESSION['username'] = $username;
+        $_SESSION['karma'] = 0;
         // Success
         echo "<div class='alert alert-success' style='margin-top:10px'>Successfully Signed Up!</div>";
         header("refresh:1;url=index.php");
@@ -28,17 +27,13 @@ function signUp($username, $email, $password) {
 
 function login($email, $password) {
     global $db;
-    //PROBLEM: Email, is in profile table, username and password are in users table. It is inconvient to query the two
-    //at best, and extremely difficuly at worst
-    $query = "SELECT * FROM profile NATURAL JOIN users WHERE email = :email";
+    //Find the matching email in the DB that the user input
+    $query = "SELECT * FROM users WHERE email = :email";
     $stmt = $db->prepare($query);
     $stmt->bindValue(":email", $email);
-    echo $email;
     try {
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        // echo $row['email'];
-        // echo $row['username'];
         if ($row) {
             // Verify password
             //Come back and use password_verify
@@ -48,9 +43,8 @@ function login($email, $password) {
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['username'] = $row['username'];
                 $_SESSION['karma'] = $row['karma'];
-
                 echo "<div class='alert alert-success' style='margin-top:10px'>You are now logged in!</div>";
-                header("refresh:1;url=index.php");
+               header("refresh:1;url=index.php");
             } else {
                 // Incorrect password
                 echo "<div class='alert alert-danger' style='margin-top:10px'>Incorrect password. Please try again.</div>";

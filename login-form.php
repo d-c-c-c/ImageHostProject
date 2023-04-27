@@ -29,10 +29,6 @@
                         <input type="email" class="form-control" name="email"/>
                     </div>
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="username" class="form-control" name="username"/>
-                    </div>
-                    <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
                         <input type="password" class="form-control" name="password"/>
                     </div>
