@@ -5,10 +5,14 @@ function signUp($username, $email, $password) {
     global $db;
     $usersQuery = "INSERT INTO users (username, email, password, karma) VALUES(:username, :email, :password, :karma)";
 
+    //TODO: create a function to verify a user's password is 8 characters long, has 1 upper case letter, 
+    // 1 number and 1 special character
+
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
     $uStmt = $db->prepare($usersQuery); //users statement
     $uStmt->bindValue(":username",$username);
     $uStmt->bindValue(":email", $email);
-    $uStmt->bindValue(":password",$password);
+    $uStmt->bindValue(":password",$hashed_password);
     $uStmt->bindValue(":karma",0);
 
     try {
@@ -36,9 +40,8 @@ function login($email, $password) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
             // Verify password
-            //Come back and use password_verify
-            //Make a function to encrypt a password on sign up
-            if ($password == $row['password']) {
+            
+            if (password_verify($password, $row['password'])) {
                 // Password is correct, set session variables
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['username'] = $row['username'];
