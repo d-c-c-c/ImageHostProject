@@ -63,4 +63,43 @@ body {
     text-align: center;
     padding: 20px;
   }
+
+  .buttonDiv {
+    margin-bottom: 20px;
+  }
+
+  .tag {
+    text-align: center;
+    background-color: rgb(227, 227, 65);
+    color: white;
+    height: 25px;
+    width: 50px;
+    padding: 0px;
+    padding-bottom: 20px;
+    border-radius: 3px;
+  }
+
+  .post {
+    margin-bottom: 30px;
+  }
+
+  .date {
+    font-size: 12px;
+    padding-left: 20px;
+    text-align: bottom;
+  }
+
+  .upvote {
+    margin: 20px;
+    background-color: red;
+  }
+
+  .downvote {
+    margin: 40px;
+  }
+
+  .upvotes {
+    font-size: 40px;
+  }
+
   
