@@ -88,5 +88,17 @@ body {
     text-align: bottom;
   }
 
+  .upvote {
+    margin: 20px;
+    background-color: red;
+  }
+
+  .downvote {
+    margin: 40px;
+  }
+
+  .upvotes {
+    font-size: 40px;
+  }
 
   
