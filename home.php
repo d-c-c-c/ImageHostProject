@@ -15,7 +15,7 @@
     }
     $postsJSON = json_encode($posts);
     
-    /*foreach ($posts as $row) {
+    /*foreach ($posts as $row) {  
       echo "Post ID: " . $row["postID"] . "<br>";
       echo "Like Tally: " . $row["like_tally"] . "<br>";
       echo "Datetime Posted: " . $row["datetime_posted"] . "<br>";
@@ -65,7 +65,7 @@
       </div>
     </header>
     <main>
-      <div class="container col justify-content-right buttonDiv">
+      <div class="container col justify-content-right buttonDiv">  <!-- NEW POST BUTTON -->
         <p>
           <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
             New Post
@@ -83,38 +83,10 @@
           </div>
         </div>
       </div>
-      
-     
-      
 
-
-
-
-        <div class="container row justify-content-left post">
+      <!-- DUMMY CARDS FOR REFERENCE -->
+      <div class="container row justify-content-left post">
         <div class="col-md-4 col-12">
-          <div class="card-container">
-            <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="img/cola-0247.jpg" alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title">Cute smiley corgi</h5>
-                <!-- p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p-->
-                <div class="card-body tag">
-                  <p>pet</p>
-                </div>
-              </div>
-              <p class="date">Posted 4:07am 1/5/2023</p>
-            </div>
-            <div class="class-arrows">
-              <div>
-                <img src="img/caret-up-solid.svg" width="30" alt="up-arrow"/>
-              </div>
-              <p style="font-size: 24px; font-family: Helvetica; font-weight: bold; color: #b4b4b4">+20</p>
-              <div>
-                <img src="img/caret-down-solid.svg" width="30" alt="down-arrow"/>
-              </div>
-            </div>
-          </div>
-          <div class="gap"></div>
           <div class="card-container">
             <div class="card" style="width: 18rem;">
               <img class="card-img-top" src="img/cola-0247.jpg" alt="Card image cap">
@@ -138,24 +110,60 @@
             </div>
           </div>
         </div>
-    </div>
-
-      
+        <div class="gap"></div>
+        <div class="card-container">
+          <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="img/cola-0247.jpg" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">Cute smiley corgi</h5>
+              <!-- p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p-->
+              <div class="card-body tag">
+                <p>pet</p>
+              </div>
+            </div>
+            <p class="date">Posted 4:07am 1/5/2023</p>
+          </div>
+          <div class="class-arrows">
+            <div>
+              <img src="img/caret-up-solid.svg" width="30" alt="up-arrow"/>
+            </div>
+            <p style="font-size: 24px; font-family: Helvetica; font-weight: bold; color: #b4b4b4">+20</p>
+            <div>
+              <img src="img/caret-down-solid.svg" width="30" alt="down-arrow"/>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
+    <!-- CLIENT SIDE RENDERING -->
     <script>
-      //console.log(posts[0][postID]);
+      // THIS BLOCK GETS THE POSTS FROM THE PHP BACK END
       var posts = <?php echo $postsJSON; ?>;
       for (var i = 0; i < posts.length; i++) {
         posts[i].image_data = (posts[i].image_data);
       }
       console.log(posts[0]['postID']);
 
-
+      // SAMPLE IMAGE RENDERING
       var img = document.createElement('img');
-      // Set the src attribute to the base64 string
       img.src = 'data:image/jpeg;base64,' + posts[1].image_data;
-      // Append the image element to the document body
       document.body.appendChild(img);
+
+      /* TODO:
+      0. MAKE SURE TO WORK IN NEW BRANCH, CAN GET MESSY
+      1. https://webdesign.tutsplus.com/tutorials/how-to-implement-infinite-scrolling-with-javascript--cms-37055
+         create infinite scroll using url tutorial above. do not need to worry about loader/loading animation or other things. just need the basic feature of infinite scroll
+      2. Under "Defining Constants" we only need cardContainer.
+      3. Set cardLimit = posts.length
+      4. cardIncrease doesnt matter. can just be 5 for now.
+      5. Under "Creating a New Card", we do not need any of the extra stuff like card background color. just implement basic feature like:
+                      const createCard = (index) => {
+                           const card = document.createElement("div");
+                          card.className = "card";
+                          card.innerHTML = index;
+                          cardContainer.appendChild(card);
+                        };
+      */
     </script> 
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
