@@ -1,4 +1,4 @@
-<!--?php
+<?php
     require('connect-db.php');
     require('db-logic.php');
 
@@ -25,7 +25,7 @@
       }
       echo "<hr>";
     } */
-?-->
+?>
 
 <!DOCTYPE html>
 <html>
