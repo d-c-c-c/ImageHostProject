@@ -1,4 +1,4 @@
-<?php
+<!--?php
     require('connect-db.php');
     require('db-logic.php');
 
@@ -25,7 +25,7 @@
       }
       echo "<hr>";
     } */
-?>
+?-->
 
 <!DOCTYPE html>
 <html>
@@ -85,9 +85,8 @@
       </div>
 
       <!-- DUMMY CARDS FOR REFERENCE -->
-      <div class="container row justify-content-left post">
-        <div class="col-md-4 col-12">
-          <div class="card-container">
+      <div class="container justify-content-left">
+          <div class="card-container col-md-4 col-12 post">
             <div class="card" style="width: 18rem;">
               <img class="card-img-top" src="img/cola-0247.jpg" alt="Card image cap">
               <div class="card-body">
@@ -109,30 +108,29 @@
               </div>
             </div>
           </div>
-        </div>
         <div class="gap"></div>
-        <div class="card-container">
-          <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="img/cola-0247.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title">Cute smiley corgi</h5>
-              <!-- p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p-->
-              <div class="card-body tag">
-                <p>pet</p>
+        <div class="card-container col-md-4 col-12 post">
+            <div class="card" style="width: 18rem;">
+              <img class="card-img-top" src="img/cola-0247.jpg" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">Cute smiley corgi</h5>
+                <!-- p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p-->
+                <div class="card-body tag">
+                  <p>pet</p>
+                </div>
+              </div>
+              <p class="date">Posted 4:07am 1/5/2023</p>
+            </div>
+            <div class="class-arrows">
+              <div>
+                <img src="img/caret-up-solid.svg" width="30" alt="up-arrow"/>
+              </div>
+              <p style="font-size: 24px; font-family: Helvetica; font-weight: bold; color: #b4b4b4">+20</p>
+              <div>
+                <img src="img/caret-down-solid.svg" width="30" alt="down-arrow"/>
               </div>
             </div>
-            <p class="date">Posted 4:07am 1/5/2023</p>
           </div>
-          <div class="class-arrows">
-            <div>
-              <img src="img/caret-up-solid.svg" width="30" alt="up-arrow"/>
-            </div>
-            <p style="font-size: 24px; font-family: Helvetica; font-weight: bold; color: #b4b4b4">+20</p>
-            <div>
-              <img src="img/caret-down-solid.svg" width="30" alt="down-arrow"/>
-            </div>
-          </div>
-        </div>
       </div>
     </main>
     <!-- CLIENT SIDE RENDERING -->
