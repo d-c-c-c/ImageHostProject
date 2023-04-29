@@ -2,6 +2,9 @@
     require('connect-db.php');
     require('db-logic.php');
 
+    //Check if user is logged in
+    $isLoggedIn = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
+    echo $isLoggedIn;
     if (isset($_FILES['image_upload'])) {
       $image_data = file_get_contents($_FILES['image_upload']['tmp_name']);
       newPost($image_data);
@@ -68,13 +71,14 @@
       </div>
     </header>
     <main>
+      <?php if ($isLoggedIn) { ?>
       <div class="container col justify-content-right buttonDiv">  <!-- NEW POST BUTTON -->
         <p>
-          <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#newPostButton" aria-expanded="false" aria-controls="newPostButton">
             New Post
           </button>
         </p>
-        <div class="collapse" id="collapseExample">
+        <div class="collapse" id="newPostButton">
           <div class="card card-body">
             <p>Upload an Image</p>
             <form method= "post" action= "home.php" enctype="multipart/form-data">
@@ -85,6 +89,9 @@
             </form>
           </div>
         </div>
+        <?php } else { ?>
+          <p>You must be logged in to create a new post.</p>
+          <?php } ?>
       </div>
 
       <!-- DUMMY CARDS FOR REFERENCE -->
@@ -114,6 +121,7 @@
           </div>
         </div> -->
 
+        
         <!-- Infinite scrolling code -->
         <div id="card-container">
         </div>
@@ -183,7 +191,8 @@
                           cardContainer.appendChild(card);
                         };
       */
-      
+                
+    
       //Infinite loading code
       //Source: https://webdesign.tutsplus.com/tutorials/how-to-implement-infinite-scrolling-with-javascript--cms-37055
       const cardContainer = document.getElementById("card-container");

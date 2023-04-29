@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 function buildDB() {
     global $db;
     query("create table if not exists users (
@@ -70,6 +71,7 @@ function signUp($username, $email, $password) {
         $_SESSION['email'] = $email;
         $_SESSION['username'] = $username;
         $_SESSION['karma'] = 0;
+        $_SESSION['isLoggedIn'] = true;
         // Success
         echo "<div class='alert alert-success' style='margin-top:10px'>Successfully Signed Up!</div>";
         header("refresh:1;url=home.php");
@@ -96,6 +98,7 @@ function login($email, $password) {
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['username'] = $row['username'];
                 $_SESSION['karma'] = $row['karma'];
+                $_SESSION['isLoggedIn'] = true;
                 echo "<div class='alert alert-success' style='margin-top:10px'>You are now logged in!</div>";
                header("refresh:1;url=home.php");
             } else {
@@ -114,9 +117,14 @@ function login($email, $password) {
 
 
 function logOut() {
-    session_unset();
-    session_destroy();
-    header("url=home.php;");
+    //Check if there is an active session
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_unset();
+        session_destroy();
+    }
+    //Unset isLoggedIn variable so users not logged in can't create posts
+    $_SESSION['isLoggedIn'] = false;
+    header("Location: home.php");
 }
 
 buildDB();
