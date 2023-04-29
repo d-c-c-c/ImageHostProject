@@ -116,7 +116,8 @@
 
         <!-- Infinite scrolling code -->
 
-        <div id="card-container"></div>
+        <div id="card-container">
+        </div>
         <div id="loader">
           <div class="skeleton-card"></div>
           <div class="skeleton-card"></div>
@@ -158,13 +159,14 @@
       // THIS BLOCK GETS THE POSTS FROM THE PHP BACK END
       var posts = <?php echo $postsJSON; ?>;
       for (var i = 0; i < posts.length; i++) {
-        posts[i].image_data = (posts[i].image_data);
+        //Retrieve data from each post's image_data field and append it into the image prefix for a valid url
+        posts[i].image_data = 'data:image/jpeg;base64,' + posts[i].image_data;
       }
-      console.log(posts[0]['postID']);
+      console.log(posts['postID']);
 
       // SAMPLE IMAGE RENDERING
       var img = document.createElement('img');
-      img.src = 'data:image/jpeg;base64,' + posts[1].image_data;
+      img.src = 'data:image/jpeg;base64,' + posts.image_data;
       document.body.appendChild(img);
 
       /* TODO:
@@ -190,8 +192,8 @@
       const cardTotalElem = document.getElementById("card-total");
       const loader = document.getElementById("loader");
 
-      const cardLimit = 99;
-      const cardIncrease = 9;
+      const cardLimit = posts.length;
+      const cardIncrease = 2;
       const pageCount = Math.ceil(cardLimit / cardIncrease);
       let currentPage = 1;
 
@@ -209,31 +211,44 @@
         }, time);
       };
 
-      const getRandomColor = () => {
-        const h = Math.floor(Math.random() * 360);
+      // const getRandomColor = () => {
+      //   const h = Math.floor(Math.random() * 360);
 
-        return `hsl(${h}deg, 90%, 85%)`;
-      };
+      //   return `hsl(${h}deg, 90%, 85%)`;
+      // };
 
-      const createCard = (index) => {
+      const createCard = (posts) => {
         const card = document.createElement("div");
         card.className = "card";
-        card.innerHTML = index;
-        card.style.backgroundColor = getRandomColor();
+        const img = document.createElement("img");
+        img.src = posts.image_data;
+        img.alt = posts.title;
+        img.style.width = "100%";
+
+        const title = document.createElement("h2");
+        title.innerText = posts.title;
+
+        const content = document.createElement("p");
+        content.innerText = posts.content;
+
+        card.appendChild(img);
+        card.appendChild(title);
+        card.appendChild(content);
         cardContainer.appendChild(card);
       };
-
+      console.log(cardLimit);
+      console.log(createCard);
+      
       const addCards = (pageIndex) => {
         currentPage = pageIndex;
 
         const startRange = (pageIndex - 1) * cardIncrease;
-        const endRange =
-          currentPage == pageCount ? cardLimit : pageIndex * cardIncrease;
+        const endRange = Math.min(startRange + cardIncrease, posts.length);
 
-        cardCountElem.innerHTML = endRange;
+        //cardCountElem.innerHTML = endRange;
 
-        for (let i = startRange + 1; i <= endRange; i++) {
-          createCard(i);
+        for (let i = startRange; i < endRange; i++) {
+          createCard(posts[i]);
         }
       };
 
