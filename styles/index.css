@@ -102,4 +102,44 @@ body {
     font-size: 40px;
   }
 
+  /* Card styling/infinite scrolling styling */
+  /* source: https://webdesign.tutsplus.com/tutorials/how-to-implement-infinite-scrolling-with-javascript--cms-37055 */
+  .card-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  #card-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .card {
+    height: 55vh;
+    width: calc((100% / 3) - 16px);
+    margin: 8px;
+    border-radius: 3px;
+    transition: all 200ms ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  .card-actions {
+    margin: 8px;
+    padding: 16px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  @media (max-width: 767.98px) {
+    .col-sm-8 {
+      max-width: none;
+    }
+  }
   

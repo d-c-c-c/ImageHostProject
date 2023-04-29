@@ -42,19 +42,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="styles/index.css">
     <script src="https://kit.fontawesome.com/9359bae789.js" crossorigin="anonymous"></script>
-    <style>
-      .card-container {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-      }
-      
-      @media (max-width: 767.98px) {
-        .col-sm-8 {
-          max-width: none;
-        }
-      }
-    </style>
   </head>
   <body>
     <!-- Add the "container" class to the header and main sections -->
@@ -101,15 +88,15 @@
       </div>
 
       <!-- DUMMY CARDS FOR REFERENCE -->
-      <div class="container row justify-content-left post">
+      <!-- <div class="container row justify-content-left post">
         <div class="col-md-4 col-12">
           <div class="card-container">
             <div class="card" style="width: 18rem;">
               <img class="card-img-top" src="img/cola-0247.jpg" alt="Card image cap">
               <div class="card-body">
-                <h5 class="card-title">Cute smiley corgi</h5>
+                <h5 class="card-title">Cute smiley corgi</h5> -->
                 <!-- p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p-->
-                <div class="card-body tag">
+                <!-- <div class="card-body tag">
                   <p>pet</p>
                 </div>
               </div>
@@ -125,15 +112,30 @@
               </div>
             </div>
           </div>
+        </div> -->
+
+        <!-- Infinite scrolling code -->
+
+        <div id="card-container"></div>
+        <div id="loader">
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
         </div>
-        <div class="gap"></div>
+        <div class="card-actions">
+          <span>Showing 
+            <span id="card-count"></span> of 
+            <span id="card-total"></span> cards      
+          </span>
+        </div>
+        <!-- <div class="gap"></div>
         <div class="card-container">
           <div class="card" style="width: 18rem;">
             <img class="card-img-top" src="img/cola-0247.jpg" alt="Card image cap">
             <div class="card-body">
-              <h5 class="card-title">Cute smiley corgi</h5>
+              <h5 class="card-title">Cute smiley corgi</h5> -->
               <!-- p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p-->
-              <div class="card-body tag">
+              <!-- <div class="card-body tag">
                 <p>pet</p>
               </div>
             </div>
@@ -149,7 +151,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </main>
     <!-- CLIENT SIDE RENDERING -->
     <script>
@@ -180,6 +182,86 @@
                           cardContainer.appendChild(card);
                         };
       */
+      
+      //Infinite loading code
+      //Source: https://webdesign.tutsplus.com/tutorials/how-to-implement-infinite-scrolling-with-javascript--cms-37055
+      const cardContainer = document.getElementById("card-container");
+      const cardCountElem = document.getElementById("card-count");
+      const cardTotalElem = document.getElementById("card-total");
+      const loader = document.getElementById("loader");
+
+      const cardLimit = 99;
+      const cardIncrease = 9;
+      const pageCount = Math.ceil(cardLimit / cardIncrease);
+      let currentPage = 1;
+
+      cardTotalElem.innerHTML = cardLimit;
+
+      var throttleTimer;
+      const throttle = (callback, time) => {
+        if (throttleTimer) return;
+
+        throttleTimer = true;
+
+        setTimeout(() => {
+          callback();
+          throttleTimer = false;
+        }, time);
+      };
+
+      const getRandomColor = () => {
+        const h = Math.floor(Math.random() * 360);
+
+        return `hsl(${h}deg, 90%, 85%)`;
+      };
+
+      const createCard = (index) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = index;
+        card.style.backgroundColor = getRandomColor();
+        cardContainer.appendChild(card);
+      };
+
+      const addCards = (pageIndex) => {
+        currentPage = pageIndex;
+
+        const startRange = (pageIndex - 1) * cardIncrease;
+        const endRange =
+          currentPage == pageCount ? cardLimit : pageIndex * cardIncrease;
+
+        cardCountElem.innerHTML = endRange;
+
+        for (let i = startRange + 1; i <= endRange; i++) {
+          createCard(i);
+        }
+      };
+
+      const handleInfiniteScroll = () => {
+        throttle(() => {
+          const endOfPage =
+            window.innerHeight + window.pageYOffset >= document.body.offsetHeight;
+
+          if (endOfPage) {
+            addCards(currentPage + 1);
+          }
+
+          if (currentPage === pageCount) {
+            removeInfiniteScroll();
+          }
+        }, 1000);
+      };
+
+      const removeInfiniteScroll = () => {
+        loader.remove();
+        window.removeEventListener("scroll", handleInfiniteScroll);
+      };
+
+      window.onload = function () {
+        addCards(currentPage);
+      };
+
+      window.addEventListener("scroll", handleInfiniteScroll);
     </script> 
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
