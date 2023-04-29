@@ -3,8 +3,8 @@
 ///////////////////////////////////////////
 
 /** S23, PHP (on GCP, local XAMPP, or CS server) connect to MySQL (on local XAMPP) **/
-$username = 'imageHost';
-$password = 'n8YrEtTVsU8QBhw';
+$username = 'root';
+$password = ''; #n8YrEtTVsU8QBhw
 $host = 'localhost:3306';           // default phpMyAdmin port = 3306
 $dbname = 'image_host';
 $dsn = "mysql:host=$host;dbname=$dbname";

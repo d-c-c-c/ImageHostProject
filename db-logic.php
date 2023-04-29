@@ -1,6 +1,56 @@
 <?php
 session_start();
 
+function buildDB() {
+    global $db;
+    query("create table if not exists users (
+        username text not null,
+        email text not null,
+        password text not null,
+        karma int not null default 0,
+        primary key (username(255))
+    );");
+
+    query("create table if not exists posts (
+        postID int not null auto_increment,
+        like_tally int not null default 0,
+        datetime_posted TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        image_data longblob,
+        primary key (postID)
+    );");
+}
+
+function query($query, $bparam=null, ...$params) {
+    global $db;
+    $stmt = $db->prepare($query);
+
+    if ($bparam != null)
+        $stmt->bind_param($bparam, ...$params);
+
+    if (!$stmt->execute()) {
+        return false;
+    }
+
+    return true;
+}
+
+function newPost($imageData) {
+    global $db;
+    #$query = "INSERT INTO posts (like_tally, datetime_posted, image_data) VALUES (0, NOW(), $imageData)";
+    #query($query);
+    $like_tally = 0;
+    $stmt = $db->prepare("INSERT INTO posts (like_tally, datetime_posted, image_data) VALUES (:like_tally, NOW(), :image_data)");
+    $stmt->bindValue(":like_tally", $like_tally);
+    $stmt->bindValue(":image_data", $imageData);
+    $stmt->execute();
+}
+
+function getPosts() {
+    global $db;
+    $posts = $db->query("SELECT * FROM posts");
+    return $posts->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function signUp($username, $email, $password) {
     global $db;
     $usersQuery = "INSERT INTO users (username, email, password, karma) VALUES(:username, :email, :password, :karma)";
@@ -22,7 +72,7 @@ function signUp($username, $email, $password) {
         $_SESSION['karma'] = 0;
         // Success
         echo "<div class='alert alert-success' style='margin-top:10px'>Successfully Signed Up!</div>";
-        header("refresh:1;url=index.php");
+        header("refresh:1;url=home.php");
     } catch (PDOException $e) {
         // Handle exception
         echo "Error: " . $e->getMessage();
@@ -47,7 +97,7 @@ function login($email, $password) {
                 $_SESSION['username'] = $row['username'];
                 $_SESSION['karma'] = $row['karma'];
                 echo "<div class='alert alert-success' style='margin-top:10px'>You are now logged in!</div>";
-               header("refresh:1;url=index.php");
+               header("refresh:1;url=home.php");
             } else {
                 // Incorrect password
                 echo "<div class='alert alert-danger' style='margin-top:10px'>Incorrect password. Please try again.</div>";
@@ -68,5 +118,7 @@ function logOut() {
     session_destroy();
     header("url=index.php;");
 }
+
+buildDB();
 ?>
 
