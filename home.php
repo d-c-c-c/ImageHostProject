@@ -115,7 +115,6 @@
         </div> -->
 
         <!-- Infinite scrolling code -->
-
         <div id="card-container">
         </div>
         <div id="loader">
@@ -199,6 +198,7 @@
 
       cardTotalElem.innerHTML = cardLimit;
 
+      //Infinite scrolling optimization; Limits the number of calls made to handleInfiniteScroll
       var throttleTimer;
       const throttle = (callback, time) => {
         if (throttleTimer) return;
@@ -210,12 +210,6 @@
           throttleTimer = false;
         }, time);
       };
-
-      // const getRandomColor = () => {
-      //   const h = Math.floor(Math.random() * 360);
-
-      //   return `hsl(${h}deg, 90%, 85%)`;
-      // };
 
       const createCard = (posts) => {
         const card = document.createElement("div");
@@ -265,8 +259,9 @@
             removeInfiniteScroll();
           }
         }, 1000);
-      };
+      };  
 
+      //Prevents infinite scrolling when user reaches the end of stored posts
       const removeInfiniteScroll = () => {
         loader.remove();
         window.removeEventListener("scroll", handleInfiniteScroll);

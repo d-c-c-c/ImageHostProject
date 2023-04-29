@@ -107,6 +107,9 @@ body {
 
   #card-container {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     flex-wrap: wrap;
   }
   
