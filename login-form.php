@@ -13,7 +13,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Sign Up</title>
+        <title>Log In</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous"> 
     </head>
     <body>
@@ -33,7 +33,7 @@
                         <input type="password" class="form-control" name="password"/>
                     </div>
                         <button type="submit" class="btn btn-dark" name="loginBtn" value="log in">Log In</button>
-                        <a class="btn btn-danger" href="index.php">Cancel</a>
+                        <a class="btn btn-danger" href="home.php">Cancel</a>
                     </div>
                 </form>
                 </div>

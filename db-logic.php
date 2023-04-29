@@ -116,7 +116,7 @@ function login($email, $password) {
 function logOut() {
     session_unset();
     session_destroy();
-    header("url=index.php;");
+    header("url=home.php;");
 }
 
 buildDB();

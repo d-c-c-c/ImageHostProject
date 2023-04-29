@@ -15,6 +15,13 @@
     }
     $postsJSON = json_encode($posts);
     
+
+  
+    if($_SERVER['REQUEST_METHOD'] == 'POST') {
+      if(!empty($_POST['logOutBtn'])) {
+          logOut();
+      }
+    }
     /*foreach ($posts as $row) {  
       echo "Post ID: " . $row["postID"] . "<br>";
       echo "Like Tally: " . $row["like_tally"] . "<br>";
@@ -60,6 +67,15 @@
             <li class="tag1" style="background-color: #E9AEAE; padding: 5px; padding-left: 20px; padding-right: 20px; border-radius: 5px">Tag</li>
             <li class="tag1" style="background-color: #AEE9D3; padding: 5px; padding-left: 20px; padding-right: 20px; border-radius: 5px">Tag</li>
             <li class="list-inline-item"><a href="#">Home</a></li>
+            <?php 
+              if(isset($_SESSION['email'])) {
+                echo '<li class="list-inline-item">Welcome, '.$_SESSION['username'].'!</li>';
+                echo '<li class="list-inline-item"><form method="post"><button type="submit" class="btn btn-dark" name="logOutBtn" value="log out">Log Out</button></form></li>';
+              } else {
+              echo '<li class="list-inline-item"><a href="login-form.php">Log In</a></li>';
+              echo'<li class="list-inline-item"><a href="signup-form.php">Sign Up</a></li>';
+              }
+            ?>
           </ul>
         </nav>
       </div>
