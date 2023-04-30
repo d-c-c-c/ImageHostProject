@@ -40,6 +40,12 @@ body {
     padding: 20px;
   }
 
+  #newPostButton {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   /*Column containers*/
 
   #column1 {
