@@ -118,7 +118,11 @@
     </header>
     <main>
       <?php if ($isLoggedIn) { ?>
-      <div class="container col justify-content-center buttonDiv">  <!-- NEW POST BUTTON -->
+      <div class="container" id="buttonDiv" style="
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      ">  <!-- NEW POST BUTTON -->
         <p>
           <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#newPostButton" aria-expanded="false" aria-controls="newPostButton">
             New Post
@@ -308,6 +312,11 @@
           downvoteBtn.style.color = "red";
         }
 
+        
+        //Displays the comments and allows a user to post their own comment
+        viewComments.addEventListener("click",() => showComments(viewComments));
+
+       
         arrowContainer.appendChild(upvoteBtn);
         arrowContainer.appendChild(karma);
         arrowContainer.appendChild(downvoteBtn);
@@ -344,8 +353,39 @@
           console.log(document.getElementById("vote").value)
         });
 
+        
         cardContainer.appendChild(card);
       };
+
+      function showComments(viewComments) {
+        const modal = document.createElement("div");
+        modal.className = "modal";
+
+        const modalContent = document.createElement("div");
+        modalContent.className = "modal-content";
+
+        const closeBtn = document.createElement("button");
+        closeBtn.className = "close-btn";
+        closeBtn.innerHTML = "X";
+        closeBtn.addEventListener("click", function() {
+        modal.style.display = "none";
+        });
+
+
+        const textBox = document.createElement("textarea");
+        textBox.classList.add("comment-box");
+        textBox.placeholder = "Enter your comment here";
+        const arrowContainer = viewComments.parentNode.nextSibling;
+
+        modalContent.appendChild(closeBtn);
+        modalContent.appendChild(textBox);
+        modal.appendChild(modalContent);
+
+        document.body.appendChild(modal);
+        modal.style.display = "block";
+        modalContent.appendChild(textBox);
+        }
+
       console.log(cardLimit);
       console.log(createCard);
       
@@ -362,6 +402,8 @@
         }
       };
 
+      
+      //Adjusts the dimensions of the page to dynamically change as the user scrolls down the page
       const handleInfiniteScroll = () => {
         throttle(() => {
           const endOfPage =
