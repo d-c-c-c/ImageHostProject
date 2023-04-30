@@ -19,6 +19,14 @@ function buildDB() {
         image_data longblob,
         primary key (postID)
     );");
+
+    query("create table if not exists votes (
+        voteID text not null,
+        postID int not null ,
+        username text not null,
+        vote int not null default 0,
+        primary key (voteID(255))
+    );");
 }
 
 function query($query, $bparam=null, ...$params) {
@@ -50,6 +58,30 @@ function getPosts() {
     global $db;
     $posts = $db->query("SELECT * FROM posts");
     return $posts->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function updateVotes($postID, $username, $vote) {
+    global $db;
+    $stmt = $db->prepare("INSERT INTO votes (voteID, postID, username, vote)
+    VALUES (:voteID, :postID, :username, :vote)
+    ON DUPLICATE KEY UPDATE vote = :vote");
+    $stmt->bindValue(":voteID", $postID . '_' . $username);
+    $stmt->bindValue(":postID", $postID);
+    $stmt->bindValue(":username", $username);
+    $stmt->bindValue(":vote", $vote); 
+    $stmt->execute();
+}
+
+function getDisplayVotes() {
+    global $db;
+    $votes = $db->query("SELECT postID, sum(vote) as totalVotes FROM votes GROUP BY postID");
+    return $votes->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getUserVotes($username) {
+    global $db;
+    $stmt = $db->query("SELECT postID, vote FROM votes WHERE username = '$username'");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function signUp($username, $email, $password) {

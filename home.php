@@ -18,13 +18,39 @@
     }
     $postsJSON = json_encode($posts);
     
+    $displayVotes = getDisplayVotes();
+    $displayVotesJSON = json_encode($displayVotes);
+    // foreach ($displayVotes as $row) {  
+    //   echo "Post ID: " . $row["postID"] . "<br>";
+    //   echo "Like Tally: " . $row["totalVotes"] . "<br>";
+    // }
 
-  
+    $userVotes = getUserVotes($_SESSION['username']);
+    $userVotesJSON = json_encode($userVotes);
+    // foreach ($userVotes as $row) {  
+    //   echo "Post ID: " . $row["postID"] . "<br>";
+    //   echo "user Tally: " . $row["vote"] . "<br>";
+    // }
+
+    //$_SESSION['username']
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
+      //echo "test";
       if(!empty($_POST['logOutBtn'])) {
           logOut();
       }
+
+      // VOTE UPDATE
+      $vote = $_POST['vote'];
+      
+      echo $vote;
+      $postId = $_POST['post_id'];
+      $username = $_SESSION['username'];
+      updateVotes($postId, $username, $vote);
+
+      header('Location: home.php');
+
     }
+    
     /*foreach ($posts as $row) {  
       echo "Post ID: " . $row["postID"] . "<br>";
       echo "Like Tally: " . $row["like_tally"] . "<br>";
@@ -60,6 +86,9 @@
 
       .upvote-btn {
         margin-bottom: 10px;
+      }
+      .downvote-btn {
+        margin-top: 10px;
       }
     </style>
   </head>
@@ -175,6 +204,11 @@
           </div>
         </div>
       </div> -->
+      <form id="voteForm" action="home.php" method="post">
+        <!-- add a hidden input field -->
+        <input type="hidden" id="post_id" name="post_id" value="">
+        <input type="hidden" id="vote" name="vote" value="">
+      </form>
     </main>
     <!-- CLIENT SIDE RENDERING -->
     <script>
@@ -185,6 +219,11 @@
         posts[i].image_data = 'data:image/jpeg;base64,' + posts[i].image_data;
       }
       console.log(posts['postID']);
+
+      var displayVotes = <?php echo $displayVotesJSON; ?>;
+      console.log(displayVotes);
+      var userVotes = <?php echo $userVotesJSON; ?>;
+      console.log(userVotes);
 
       /* SAMPLE IMAGE RENDERING
       var img = document.createElement('img');
@@ -236,11 +275,11 @@
         }, time);
       };
 
-      const createCard = (posts) => {
+      const createCard = (post) => {
         const card = document.createElement("div");
         card.className = "card";
         const img = document.createElement("img");
-        img.src = posts.image_data;
+        img.src = post.image_data;
 
         img.style.height = "90%";
         const viewComments = document.createElement("button");
@@ -259,13 +298,66 @@
         downvoteBtn.innerHTML = '<i class="fas fa-arrow-down"></i>';
         downvoteBtn.classList.add("btn", "downvote-btn");
 
+        const karma = document.createElement("span");
+        karma.textContent = displayVotes.find(vote => vote.postID === post.postID)?.totalVotes ?? "0";
+
+        voteStatus = userVotes.find(vote => vote.postID === post.postID)?.vote;
+        if (voteStatus === 1) {
+          upvoteBtn.style.color = "blue";
+        } else if (voteStatus === -1) {
+          downvoteBtn.style.color = "red";
+        }
+
         arrowContainer.appendChild(upvoteBtn);
+        arrowContainer.appendChild(karma);
         arrowContainer.appendChild(downvoteBtn);
 
         card.appendChild(img);
         card.appendChild(viewComments);
         card.appendChild(arrowContainer);
-      
+
+        upvoteBtn.addEventListener("click", () => {
+          curvote = userVotes.find(vote => vote.postID === post.postID)?.vote;
+          console.log(curvote)
+          if (curvote == 1) {
+            //post.like_tally--;
+            console.log("yes");
+            uservote = 0;
+            upvoteBtn.style.color = "";
+            
+          } else {
+            //post.like_tally++;
+            console.log("no");
+            uservote = 1;
+            upvoteBtn.style.color = "blue";
+            downvoteBtn.style.color = "";
+            
+          }
+          console.log("here"+uservote);
+          document.getElementById("vote").value = uservote;
+          document.getElementById("post_id").value = post.postID;
+          document.getElementById("voteForm").submit();
+        });
+
+        downvoteBtn.addEventListener("click", () => {
+          curvote = userVotes.find(vote => vote.postID === post.postID)?.vote;
+          if (curvote == -1) {
+            //post.like_tally++;
+            uservote = 0;
+            downvoteBtn.style.color = "";
+            
+          } else {
+            //post.like_tally--;
+            uservote = -1;
+            upvoteBtn.style.color = "";
+            downvoteBtn.style.color = "red";
+            
+          }
+          document.getElementById("vote").value = uservote;
+          document.getElementById("post_id").value = post.postID;
+          document.getElementById("voteForm").submit();
+          console.log(document.getElementById("vote").value)
+        });
 
         cardContainer.appendChild(card);
       };
