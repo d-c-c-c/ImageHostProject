@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 function buildDB() {
     global $db;
     query("create table if not exists users (
@@ -17,6 +18,14 @@ function buildDB() {
         datetime_posted TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         image_data longblob,
         primary key (postID)
+    );");
+
+    query("create table if not exists votes (
+        voteID text not null,
+        postID int not null ,
+        username text not null,
+        vote int not null default 0,
+        primary key (voteID(255))
     );");
 }
 
@@ -51,6 +60,30 @@ function getPosts() {
     return $posts->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function updateVotes($postID, $username, $vote) {
+    global $db;
+    $stmt = $db->prepare("INSERT INTO votes (voteID, postID, username, vote)
+    VALUES (:voteID, :postID, :username, :vote)
+    ON DUPLICATE KEY UPDATE vote = :vote");
+    $stmt->bindValue(":voteID", $postID . '_' . $username);
+    $stmt->bindValue(":postID", $postID);
+    $stmt->bindValue(":username", $username);
+    $stmt->bindValue(":vote", $vote); 
+    $stmt->execute();
+}
+
+function getDisplayVotes() {
+    global $db;
+    $votes = $db->query("SELECT postID, sum(vote) as totalVotes FROM votes GROUP BY postID");
+    return $votes->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getUserVotes($username) {
+    global $db;
+    $stmt = $db->query("SELECT postID, vote FROM votes WHERE username = '$username'");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function signUp($username, $email, $password) {
     global $db;
     $usersQuery = "INSERT INTO users (username, email, password, karma) VALUES(:username, :email, :password, :karma)";
@@ -70,6 +103,7 @@ function signUp($username, $email, $password) {
         $_SESSION['email'] = $email;
         $_SESSION['username'] = $username;
         $_SESSION['karma'] = 0;
+        $_SESSION['isLoggedIn'] = true;
         // Success
         echo "<div class='alert alert-success' style='margin-top:10px'>Successfully Signed Up!</div>";
         header("refresh:1;url=home.php");
@@ -96,6 +130,7 @@ function login($email, $password) {
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['username'] = $row['username'];
                 $_SESSION['karma'] = $row['karma'];
+                $_SESSION['isLoggedIn'] = true;
                 echo "<div class='alert alert-success' style='margin-top:10px'>You are now logged in!</div>";
                header("refresh:1;url=home.php");
             } else {
@@ -114,9 +149,14 @@ function login($email, $password) {
 
 
 function logOut() {
-    session_unset();
-    session_destroy();
-    header("url=home.php;");
+    //Check if there is an active session
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_unset();
+        session_destroy();
+    }
+    //Unset isLoggedIn variable so users not logged in can't create posts
+    $_SESSION['isLoggedIn'] = false;
+    header("Location: home.php");
 }
 
 buildDB();
