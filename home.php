@@ -240,6 +240,7 @@
         }, time);
       };
 
+      //Creates the cards users posts are stored in
       const createCard = (posts) => {
         const card = document.createElement("div");
         card.className = "card";
@@ -263,16 +264,50 @@
         downvoteBtn.innerHTML = '<i class="fas fa-arrow-down"></i>';
         downvoteBtn.classList.add("btn", "downvote-btn");
 
+        
+        //Displays the comments and allows a user to post their own comment
+        viewComments.addEventListener("click",() => showComments(viewComments));
+
+       
         arrowContainer.appendChild(upvoteBtn);
         arrowContainer.appendChild(downvoteBtn);
 
         card.appendChild(img);
         card.appendChild(viewComments);
         card.appendChild(arrowContainer);
-      
-
+        
         cardContainer.appendChild(card);
       };
+
+      function showComments(viewComments) {
+        const modal = document.createElement("div");
+        modal.className = "modal";
+
+        const modalContent = document.createElement("div");
+        modalContent.className = "modal-content";
+
+        const closeBtn = document.createElement("button");
+        closeBtn.className = "close-btn";
+        closeBtn.innerHTML = "X";
+        closeBtn.addEventListener("click", function() {
+        modal.style.display = "none";
+        });
+
+
+        const textBox = document.createElement("textarea");
+        textBox.classList.add("comment-box");
+        textBox.placeholder = "Enter your comment here";
+        const arrowContainer = viewComments.parentNode.nextSibling;
+
+        modalContent.appendChild(closeBtn);
+        modalContent.appendChild(textBox);
+        modal.appendChild(modalContent);
+
+        document.body.appendChild(modal);
+        modal.style.display = "block";
+        modalContent.appendChild(textBox);
+        }
+
       console.log(cardLimit);
       console.log(createCard);
       
@@ -289,6 +324,8 @@
         }
       };
 
+      
+      //Adjusts the dimensions of the page to dynamically change as the user scrolls down the page
       const handleInfiniteScroll = () => {
         throttle(() => {
           const endOfPage =
