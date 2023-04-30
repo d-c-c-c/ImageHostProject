@@ -4,7 +4,7 @@
 
     //Check if user is logged in
     $isLoggedIn = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
-    echo $isLoggedIn;
+    //echo $isLoggedIn;
     if (isset($_FILES['image_upload'])) {
       $image_data = file_get_contents($_FILES['image_upload']['tmp_name']);
       newPost($image_data);
@@ -45,6 +45,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="styles/index.css">
     <script src="https://kit.fontawesome.com/9359bae789.js" crossorigin="anonymous"></script>
+    <style>
+      .arrow-container {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      }
+
+      .upvote-btn {
+        margin-bottom: 10px;
+      }
+    </style>
   </head>
   <body>
     <!-- Add the "container" class to the header and main sections -->
@@ -72,7 +89,7 @@
     </header>
     <main>
       <?php if ($isLoggedIn) { ?>
-      <div class="container col justify-content-right buttonDiv">  <!-- NEW POST BUTTON -->
+      <div class="container col justify-content-center buttonDiv">  <!-- NEW POST BUTTON -->
         <p>
           <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#newPostButton" aria-expanded="false" aria-controls="newPostButton">
             New Post
@@ -125,9 +142,7 @@
         <!-- Infinite scrolling code -->
         <div id="card-container">
         </div>
-        <div id="loader">
-          <div class="skeleton-card"></div>
-          <div class="skeleton-card"></div>
+        <div id="loader" class="container d-flex justify-content-center align-items-center">
           <div class="skeleton-card"></div>
         </div>
         <div class="card-actions">
@@ -171,10 +186,11 @@
       }
       console.log(posts['postID']);
 
-      // SAMPLE IMAGE RENDERING
+      /* SAMPLE IMAGE RENDERING
       var img = document.createElement('img');
       img.src = 'data:image/jpeg;base64,' + posts.image_data;
       document.body.appendChild(img);
+      */
 
       /* TODO:
       0. MAKE SURE TO WORK IN NEW BRANCH, CAN GET MESSY
@@ -225,18 +241,32 @@
         card.className = "card";
         const img = document.createElement("img");
         img.src = posts.image_data;
-        img.alt = posts.title;
-        img.style.width = "100%";
 
-        const title = document.createElement("h2");
-        title.innerText = posts.title;
+        img.style.height = "90%";
+        const viewComments = document.createElement("button");
+        viewComments.textContent = "View Comments";
+        viewComments.classList.add("btn");
+        viewComments.id = "comment-btn";
 
-        const content = document.createElement("p");
-        content.innerText = posts.content;
+        const arrowContainer = document.createElement("div");
+        arrowContainer.className = "arrow-container";
+
+        const upvoteBtn = document.createElement("button");
+        upvoteBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
+        upvoteBtn.classList.add("btn", "upvote-btn");
+
+        const downvoteBtn = document.createElement("button");
+        downvoteBtn.innerHTML = '<i class="fas fa-arrow-down"></i>';
+        downvoteBtn.classList.add("btn", "downvote-btn");
+
+        arrowContainer.appendChild(upvoteBtn);
+        arrowContainer.appendChild(downvoteBtn);
 
         card.appendChild(img);
-        card.appendChild(title);
-        card.appendChild(content);
+        card.appendChild(viewComments);
+        card.appendChild(arrowContainer);
+      
+
         cardContainer.appendChild(card);
       };
       console.log(cardLimit);
@@ -248,7 +278,7 @@
         const startRange = (pageIndex - 1) * cardIncrease;
         const endRange = Math.min(startRange + cardIncrease, posts.length);
 
-        //cardCountElem.innerHTML = endRange;
+        cardCountElem.innerHTML = endRange;
 
         for (let i = startRange; i < endRange; i++) {
           createCard(posts[i]);
