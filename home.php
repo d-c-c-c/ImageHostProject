@@ -320,20 +320,12 @@
           curvote = userVotes.find(vote => vote.postID === post.postID)?.vote;
           console.log(curvote)
           if (curvote == 1) {
-            //post.like_tally--;
-            console.log("yes");
             uservote = 0;
-            upvoteBtn.style.color = "";
-            
           } else {
             //post.like_tally++;
-            console.log("no");
             uservote = 1;
-            upvoteBtn.style.color = "blue";
-            downvoteBtn.style.color = "";
             
           }
-          console.log("here"+uservote);
           document.getElementById("vote").value = uservote;
           document.getElementById("post_id").value = post.postID;
           document.getElementById("voteForm").submit();
@@ -342,16 +334,9 @@
         downvoteBtn.addEventListener("click", () => {
           curvote = userVotes.find(vote => vote.postID === post.postID)?.vote;
           if (curvote == -1) {
-            //post.like_tally++;
             uservote = 0;
-            downvoteBtn.style.color = "";
-            
           } else {
-            //post.like_tally--;
             uservote = -1;
-            upvoteBtn.style.color = "";
-            downvoteBtn.style.color = "red";
-            
           }
           document.getElementById("vote").value = uservote;
           document.getElementById("post_id").value = post.postID;
