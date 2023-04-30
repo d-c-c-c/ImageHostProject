@@ -131,15 +131,15 @@ function login($email, $password) {
                 $_SESSION['username'] = $row['username'];
                 $_SESSION['karma'] = $row['karma'];
                 $_SESSION['isLoggedIn'] = true;
-                echo "<div class='alert alert-success' style='margin-top:10px'>You are now logged in!</div>";
+                echo "<div class='alert alert-success' style='margin-top:10px'>You are now Logged In!</div>";
                header("refresh:1;url=home.php");
             } else {
                 // Incorrect password
-                echo "<div class='alert alert-danger' style='margin-top:10px'>Incorrect password. Please try again.</div>";
+                echo "<div class='alert alert-danger' style='margin-top:10px'>Incorrect password. Please Try Again.</div>";
             }
         } else {
             // User not found
-            echo "<div class='alert alert-danger' style='margin-top:10px'>User not found. Please check your email and try again.</div>";
+            echo "<div class='alert alert-danger' style='margin-top:10px'>User Not Found. Please Check Your email and Try Again.</div>";
         }
     } catch (PDOException $e) {
         // Handle exception
