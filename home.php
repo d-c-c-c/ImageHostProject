@@ -89,7 +89,11 @@
     </header>
     <main>
       <?php if ($isLoggedIn) { ?>
-      <div class="container col justify-content-center buttonDiv">  <!-- NEW POST BUTTON -->
+      <div class="container" id="buttonDiv" style="
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      ">  <!-- NEW POST BUTTON -->
         <p>
           <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#newPostButton" aria-expanded="false" aria-controls="newPostButton">
             New Post
