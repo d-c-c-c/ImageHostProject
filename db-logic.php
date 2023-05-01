@@ -17,6 +17,7 @@ function buildDB() {
         like_tally int not null default 0,
         datetime_posted TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         image_data longblob,
+        tag text not null,
         primary key (postID)
     );");
 
