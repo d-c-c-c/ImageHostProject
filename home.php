@@ -10,10 +10,7 @@
       $image_data = file_get_contents($_FILES['image_upload']['tmp_name']);
       newPost($image_data);
       header('Location: home.php');
-      } else { 
-        //Sets error message as a session variable to be used to display the error message in the html
-        $_SESSION['error'] = "Please select an image.";
-      }
+
   }
 
     $posts = getPosts();
