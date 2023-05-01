@@ -94,6 +94,13 @@ function updateVotes($postID, $username, $vote) {
 function getTag($username){
     global $db;
     $stmt = $db->query("SELECT tag FROM tags WHERE username = '$username'");
+    if ($stmt->rowCount() == 0) {
+        $stmt2 = $db->prepare("INSERT INTO tags (username, tag) VALUES (:username, :tag)");
+        $stmt2->bindValue(":username", $username);
+        $stmt2->bindValue(":tag", "none");
+        $stmt2->execute();
+        $stmt = $db->query("SELECT tag FROM tags WHERE username = '$username'");
+    }
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -191,7 +198,7 @@ function logOut() {
     }
     //Unset isLoggedIn variable so users not logged in can't create posts
     $_SESSION['isLoggedIn'] = false;
-    header("Location: home.php");
+    header("Location: index.php");
 }
 
 buildDB();

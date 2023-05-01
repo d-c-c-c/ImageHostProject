@@ -2,6 +2,9 @@
     require('connect-db.php');
     require('db-logic.php');
 
+    if(!empty($_POST['logOutBtn'])) {
+      logOut();
+    }
     //Check if user is logged in
     $isLoggedIn = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
     //echo $isLoggedIn;
@@ -11,7 +14,9 @@
       newPost($image_data, $_POST['flexRadioDefault']);
       header('Location: home.php');
 
-  }
+  } 
+
+
     $curTag = getTag($_SESSION['username'])[0]['tag'];
     $posts = getPosts($curTag);
     foreach ($posts as &$row) {
@@ -31,6 +36,7 @@
       $userVotes = getUserVotes($_SESSION['username']);
       $userVotesJSON = json_encode($userVotes);
     }
+    
     // foreach ($userVotes as $row) {  
     //   echo "Post ID: " . $row["postID"] . "<br>";
     //   echo "user Tally: " . $row["vote"] . "<br>";
@@ -39,9 +45,7 @@
     //$_SESSION['username']
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
       //echo "test";
-      if(!empty($_POST['logOutBtn'])) {
-          logOut();
-      }
+      
 
       // VOTE UPDATE
       if(isset($_POST['vote']) && isset($_POST['post_id'])) {

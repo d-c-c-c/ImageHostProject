@@ -33,7 +33,7 @@
                         <input type="password" class="form-control" name="password"/>
                     </div>
                         <button type="submit" class="btn btn-dark" name="loginBtn" value="log in">Log In</button>
-                        <a class="btn btn-danger" href="home.php">Cancel</a>
+                        <a class="btn btn-danger" href="index.php">Cancel</a>
                     </div>
                 </form>
                 </div>
