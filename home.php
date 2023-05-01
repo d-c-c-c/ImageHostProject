@@ -5,7 +5,7 @@
     //Check if user is logged in
     $isLoggedIn = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
     //echo $isLoggedIn;
-    if (isset($_FILES['image_upload'])) {
+    if (isset($_FILES['image_upload']) && !empty($_FILES['image_upload']['tmp_name'])) {
       $image_data = file_get_contents($_FILES['image_upload']['tmp_name']);
       newPost($image_data);
       header('Location: home.php');
@@ -40,12 +40,14 @@
       }
 
       // VOTE UPDATE
-      $vote = $_POST['vote'];
+      if(isset($_POST['vote']) && isset($_POST['post_id'])) {
+        $vote = $_POST['vote'];
       
-      echo $vote;
-      $postId = $_POST['post_id'];
-      $username = $_SESSION['username'];
-      updateVotes($postId, $username, $vote);
+        echo $vote;
+        $postId = $_POST['post_id'];
+        $username = $_SESSION['username'];
+        updateVotes($postId, $username, $vote);
+      }
 
       header('Location: home.php');
 
@@ -118,14 +120,14 @@
     </header>
     <main>
       <?php if ($isLoggedIn) { ?>
-      <div class="container col justify-content-center buttonDiv">  <!-- NEW POST BUTTON -->
+      <div class="container text-center">  <!-- NEW POST BUTTON -->
         <p>
           <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#newPostButton" aria-expanded="false" aria-controls="newPostButton">
             New Post
           </button>
         </p>
         <div class="collapse" id="newPostButton">
-          <div class="card card-body">
+          <div class="card card-body mx-auto">
             <p>Upload an Image</p>
             <form method= "post" action= "home.php" enctype="multipart/form-data">
               <div class="form-group">
