@@ -19,7 +19,7 @@
       $row['image_data'] = base64_encode($row['image_data']);
     }
     if(isset($_SESSION['email'])) {
-      $postsJSON = json_encode($posts);
+      $postsJSON = json_encode($posts); 
       
       $displayVotes = getDisplayVotes();
       $displayVotesJSON = json_encode($displayVotes);
@@ -51,7 +51,10 @@
         $postId = $_POST['post_id'];
         $username = $_SESSION['username'];
         updateVotes($postId, $username, $vote);
+      }
 
+      if(isset($_POST['delete-btn'])) {
+        deletePost($_POST['delete-btn']);
       }
 
       header('Location: home.php');
@@ -96,6 +99,10 @@
       }
       .downvote-btn {
         margin-top: 10px;
+      }
+
+      .button-container {
+        display: flex;
       }
     </style>
   </head>
@@ -289,12 +296,25 @@
         card.className = "card";
         const img = document.createElement("img");
         img.src = post.image_data;
-
         img.style.height = "90%";
+
+        const buttonContainer = document.createElement("div");
+        buttonContainer.className = "button-container";
+
         const viewComments = document.createElement("button");
         viewComments.textContent = "View Comments";
         viewComments.classList.add("btn");
         viewComments.id = "comment-btn";
+
+        const deleteForm = document.createElement("form");
+        deleteForm.method = "post";
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.classList.add("btn");
+        deleteBtn.id = "delete-btn";
+        deleteBtn.name = "delete-btn";
+        deleteBtn.value = post.postID;
 
         const arrowContainer = document.createElement("div");
         arrowContainer.className = "arrow-container";
@@ -321,13 +341,17 @@
         //Displays the comments and allows a user to post their own comment
         viewComments.addEventListener("click",() => showComments(viewComments));
 
-       
+        deleteForm.appendChild(deleteBtn);
+        buttonContainer.appendChild(viewComments);
+        buttonContainer.appendChild(deleteForm);
+        
+        
         arrowContainer.appendChild(upvoteBtn);
         arrowContainer.appendChild(karma);
         arrowContainer.appendChild(downvoteBtn);
 
         card.appendChild(img);
-        card.appendChild(viewComments);
+        card.appendChild(buttonContainer);
         card.appendChild(arrowContainer);
 
         upvoteBtn.addEventListener("click", () => {
@@ -358,6 +382,9 @@
           console.log(document.getElementById("vote").value)
         });
 
+        deleteBtn.addEventListener("click", () => {
+          console.log(deleteBtn.value);
+        })
         
         cardContainer.appendChild(card);
       };
@@ -375,6 +402,7 @@
         closeBtn.addEventListener("click", function() {
         modal.style.display = "none";
         });
+
 
 
         const textBox = document.createElement("textarea");

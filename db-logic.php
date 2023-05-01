@@ -60,6 +60,12 @@ function getPosts() {
     return $posts->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function deletePost($postID) {
+    global $db;
+    $stmt = $db->query("DELETE FROM posts WHERE postID = '$postID'");
+    $stmt2 = $db->query("DELETE FROM votes WHERE postID = '$postID'");
+}
+
 function updateVotes($postID, $username, $vote) {
     global $db;
     $stmt = $db->prepare("INSERT INTO votes (voteID, postID, username, vote)
