@@ -28,6 +28,12 @@ function buildDB() {
         vote int not null default 0,
         primary key (voteID(255))
     );");
+
+    query("create table if not exists tags (
+        username text not null,
+        tag text not null,
+        primary key (username(255))
+    );");
 }
 
 function query($query, $bparam=null, ...$params) {
@@ -44,20 +50,26 @@ function query($query, $bparam=null, ...$params) {
     return true;
 }
 
-function newPost($imageData) {
+function newPost($imageData, $tag) {
     global $db;
     #$query = "INSERT INTO posts (like_tally, datetime_posted, image_data) VALUES (0, NOW(), $imageData)";
     #query($query);
     $like_tally = 0;
-    $stmt = $db->prepare("INSERT INTO posts (like_tally, datetime_posted, image_data) VALUES (:like_tally, NOW(), :image_data)");
+    $stmt = $db->prepare("INSERT INTO posts (like_tally, datetime_posted, image_data, tag) VALUES (:like_tally, NOW(), :image_data, :tag)");
+    $stmt->bindvalue(":tag", $tag);
     $stmt->bindValue(":like_tally", $like_tally);
     $stmt->bindValue(":image_data", $imageData);
     $stmt->execute();
 }
 
-function getPosts() {
+function getPosts($curTag) {
     global $db;
-    $posts = $db->query("SELECT * FROM posts");
+    if ($curTag == "none") {
+        $posts = $db->query("SELECT * FROM posts");
+    }
+    else {
+        $posts = $db->query("SELECT * FROM posts WHERE tag = '$curTag'");
+    }
     return $posts->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -76,6 +88,22 @@ function updateVotes($postID, $username, $vote) {
     $stmt->bindValue(":postID", $postID);
     $stmt->bindValue(":username", $username);
     $stmt->bindValue(":vote", $vote); 
+    $stmt->execute();
+}
+
+function getTag($username){
+    global $db;
+    $stmt = $db->query("SELECT tag FROM tags WHERE username = '$username'");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function updateTag($username, $tag) {
+    global $db;
+    $stmt = $db->prepare("INSERT INTO tags (username, tag)
+    VALUES (:username, :tag)
+    ON DUPLICATE KEY UPDATE tag = :tag");
+    $stmt->bindValue(":username", $username);
+    $stmt->bindValue(":tag", $tag);
     $stmt->execute();
 }
 
