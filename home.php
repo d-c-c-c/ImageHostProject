@@ -5,10 +5,8 @@
     //Check if user is logged in
     $isLoggedIn = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
     //echo $isLoggedIn;
-    
-    //Checks if the user uploaded a file before calling newPost
-    if(isset($_POST['newPostSubmitBtn'])) {
-      if (!empty($_FILES['image_upload']['tmp_name'])) {
+
+    if (isset($_FILES['image_upload']) && !empty($_FILES['image_upload']['tmp_name'])) {
       $image_data = file_get_contents($_FILES['image_upload']['tmp_name']);
       newPost($image_data);
       header('Location: home.php');
@@ -50,16 +48,13 @@
 
       // VOTE UPDATE
       if(isset($_POST['vote']) && isset($_POST['post_id'])) {
-      $vote = $_POST['vote'];
+        $vote = $_POST['vote'];
       
-      echo $vote;
-      $postId = $_POST['post_id'];
-      $username = $_SESSION['username'];
-      updateVotes($postId, $username, $vote);
-      } else {
-        $error = "Please select an image.";
-        header('Location: home.php');
-        echo $error;
+        echo $vote;
+        $postId = $_POST['post_id'];
+        $username = $_SESSION['username'];
+        updateVotes($postId, $username, $vote);
+
       }
 
       header('Location: home.php');
@@ -133,28 +128,23 @@
     </header>
     <main>
       <?php if ($isLoggedIn) { ?>
-      <div class="container text-center" id="buttonDiv">  <!-- NEW POST BUTTON -->
 
-      <!-- Displays an error message if the user submitted a post without uploading a file. Currently  doesn't work -->
-        <?php if (isset($_SESSION['error'])) { ?>
-          <div class="alert alert-danger" role="alert">
-              <?php echo $_SESSION['error']; ?>
-          </div>
-        <?php unset($_SESSION['error'] );} ?>
+      <div class="container text-center">  <!-- NEW POST BUTTON -->
+        <p>
           <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#newPostButton" aria-expanded="false" aria-controls="newPostButton">
             New Post
           </button>
         <div class="collapse" id="newPostButton">
-          <div class="card mx-auto">
-            <div class="card-body">
-              <p>Upload an Image</p>
-              <form method= "post" action= "home.php" enctype="multipart/form-data">
-                <div class="form-group">
-                  <input type="file" class="form-control-file" id="image-upload" name="image_upload" accept="image/*">
-                </div>
-                  <button type="submit" class="btn btn-primary" name="newPostSubmitBtn" >Submit</button>
-              </form>
-            </div>
+
+          <div class="card card-body mx-auto">
+            <p>Upload an Image</p>
+            <form method= "post" action= "home.php" enctype="multipart/form-data">
+              <div class="form-group">
+                <input type="file" class="form-control-file" id="image-upload" name="image_upload" accept="image/*">
+              </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
           </div>
         </div>
         <?php } else { ?>
