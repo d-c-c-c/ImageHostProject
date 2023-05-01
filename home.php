@@ -5,28 +5,35 @@
     //Check if user is logged in
     $isLoggedIn = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
     //echo $isLoggedIn;
+
     if (isset($_FILES['image_upload']) && !empty($_FILES['image_upload']['tmp_name'])) {
       $image_data = file_get_contents($_FILES['image_upload']['tmp_name']);
       newPost($image_data);
       header('Location: home.php');
-    }
+      } else { 
+        //Sets error message as a session variable to be used to display the error message in the html
+        $_SESSION['error'] = "Please select an image.";
+      }
+  }
 
     $posts = getPosts();
     foreach ($posts as &$row) {
       // Encode image data as base64 string
       $row['image_data'] = base64_encode($row['image_data']);
     }
-    $postsJSON = json_encode($posts);
-    
-    $displayVotes = getDisplayVotes();
-    $displayVotesJSON = json_encode($displayVotes);
-    // foreach ($displayVotes as $row) {  
-    //   echo "Post ID: " . $row["postID"] . "<br>";
-    //   echo "Like Tally: " . $row["totalVotes"] . "<br>";
-    // }
+    if(isset($_SESSION['email'])) {
+      $postsJSON = json_encode($posts);
+      
+      $displayVotes = getDisplayVotes();
+      $displayVotesJSON = json_encode($displayVotes);
+      // foreach ($displayVotes as $row) {  
+      //   echo "Post ID: " . $row["postID"] . "<br>";
+      //   echo "Like Tally: " . $row["totalVotes"] . "<br>";
+      // }
 
-    $userVotes = getUserVotes($_SESSION['username']);
-    $userVotesJSON = json_encode($userVotes);
+      $userVotes = getUserVotes($_SESSION['username']);
+      $userVotesJSON = json_encode($userVotes);
+    }
     // foreach ($userVotes as $row) {  
     //   echo "Post ID: " . $row["postID"] . "<br>";
     //   echo "user Tally: " . $row["vote"] . "<br>";
@@ -47,6 +54,7 @@
         $postId = $_POST['post_id'];
         $username = $_SESSION['username'];
         updateVotes($postId, $username, $vote);
+
       }
 
       header('Location: home.php');
@@ -120,13 +128,14 @@
     </header>
     <main>
       <?php if ($isLoggedIn) { ?>
+
       <div class="container text-center">  <!-- NEW POST BUTTON -->
         <p>
           <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#newPostButton" aria-expanded="false" aria-controls="newPostButton">
             New Post
           </button>
-        </p>
         <div class="collapse" id="newPostButton">
+
           <div class="card card-body mx-auto">
             <p>Upload an Image</p>
             <form method= "post" action= "home.php" enctype="multipart/form-data">
@@ -135,6 +144,7 @@
               </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
+
           </div>
         </div>
         <?php } else { ?>
@@ -310,6 +320,11 @@
           downvoteBtn.style.color = "red";
         }
 
+        
+        //Displays the comments and allows a user to post their own comment
+        viewComments.addEventListener("click",() => showComments(viewComments));
+
+       
         arrowContainer.appendChild(upvoteBtn);
         arrowContainer.appendChild(karma);
         arrowContainer.appendChild(downvoteBtn);
@@ -322,20 +337,12 @@
           curvote = userVotes.find(vote => vote.postID === post.postID)?.vote;
           console.log(curvote)
           if (curvote == 1) {
-            //post.like_tally--;
-            console.log("yes");
             uservote = 0;
-            upvoteBtn.style.color = "";
-            
           } else {
             //post.like_tally++;
-            console.log("no");
             uservote = 1;
-            upvoteBtn.style.color = "blue";
-            downvoteBtn.style.color = "";
             
           }
-          console.log("here"+uservote);
           document.getElementById("vote").value = uservote;
           document.getElementById("post_id").value = post.postID;
           document.getElementById("voteForm").submit();
@@ -344,16 +351,9 @@
         downvoteBtn.addEventListener("click", () => {
           curvote = userVotes.find(vote => vote.postID === post.postID)?.vote;
           if (curvote == -1) {
-            //post.like_tally++;
             uservote = 0;
-            downvoteBtn.style.color = "";
-            
           } else {
-            //post.like_tally--;
             uservote = -1;
-            upvoteBtn.style.color = "";
-            downvoteBtn.style.color = "red";
-            
           }
           document.getElementById("vote").value = uservote;
           document.getElementById("post_id").value = post.postID;
@@ -361,8 +361,39 @@
           console.log(document.getElementById("vote").value)
         });
 
+        
         cardContainer.appendChild(card);
       };
+
+      function showComments(viewComments) {
+        const modal = document.createElement("div");
+        modal.className = "modal";
+
+        const modalContent = document.createElement("div");
+        modalContent.className = "modal-content";
+
+        const closeBtn = document.createElement("button");
+        closeBtn.className = "close-btn";
+        closeBtn.innerHTML = "X";
+        closeBtn.addEventListener("click", function() {
+        modal.style.display = "none";
+        });
+
+
+        const textBox = document.createElement("textarea");
+        textBox.classList.add("comment-box");
+        textBox.placeholder = "Enter your comment here";
+        const arrowContainer = viewComments.parentNode.nextSibling;
+
+        modalContent.appendChild(closeBtn);
+        modalContent.appendChild(textBox);
+        modal.appendChild(modalContent);
+
+        document.body.appendChild(modal);
+        modal.style.display = "block";
+        modalContent.appendChild(textBox);
+        }
+
       console.log(cardLimit);
       console.log(createCard);
       
@@ -379,6 +410,8 @@
         }
       };
 
+      
+      //Adjusts the dimensions of the page to dynamically change as the user scrolls down the page
       const handleInfiniteScroll = () => {
         throttle(() => {
           const endOfPage =
