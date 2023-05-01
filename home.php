@@ -8,12 +8,12 @@
 
     if (isset($_FILES['image_upload']) && !empty($_FILES['image_upload']['tmp_name'])) {
       $image_data = file_get_contents($_FILES['image_upload']['tmp_name']);
-      newPost($image_data);
+      newPost($image_data, $_POST['flexRadioDefault']);
       header('Location: home.php');
 
   }
-
-    $posts = getPosts();
+    $curTag = getTag($_SESSION['username'])[0]['tag'];
+    $posts = getPosts($curTag);
     foreach ($posts as &$row) {
       // Encode image data as base64 string
       $row['image_data'] = base64_encode($row['image_data']);
@@ -51,6 +51,10 @@
         $postId = $_POST['post_id'];
         $username = $_SESSION['username'];
         updateVotes($postId, $username, $vote);
+      }
+
+      if(isset($_POST['tagBtn'])) {
+        updateTag($_SESSION['username'], $_POST['tagBtn']);
       }
 
       if(isset($_POST['delete-btn'])) {
@@ -113,9 +117,6 @@
         <h1 class="mb-0">Image Host</h1>
         <nav>
           <ul class="list-inline mb-0">
-            <li class="tag1" style="background-color: #687FAD; padding: 5px; padding-left: 20px; padding-right: 20px; border-radius: 5px">Tag</li>
-            <li class="tag1" style="background-color: #E9AEAE; padding: 5px; padding-left: 20px; padding-right: 20px; border-radius: 5px">Tag</li>
-            <li class="tag1" style="background-color: #AEE9D3; padding: 5px; padding-left: 20px; padding-right: 20px; border-radius: 5px">Tag</li>
             <li class="list-inline-item"><a href="#">Home</a></li>
             <?php 
               if(isset($_SESSION['email'])) {
@@ -131,22 +132,45 @@
       </div>
     </header>
     <main>
+    <form id="tagForm" action="home.php" method="post">
+      <button type="submit" class="btn btn-primary" name="tagBtn" value="memes">memes</button>
+      <button type="submit" class="btn btn-success" name="tagBtn" value="pets">pets</button>
+      <button type="submit" class="btn btn-danger" name="tagBtn" value="sports">sports</button>
+      <button type="submit" class="btn btn-light" name="tagBtn" value="none">clear tags</button>
+    </form>
       <?php if ($isLoggedIn) { ?>
-
       <div class="container text-center">  <!-- NEW POST BUTTON -->
         <p>
           <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#newPostButton" aria-expanded="false" aria-controls="newPostButton">
             New Post
           </button>
         <div class="collapse" id="newPostButton">
-
           <div class="card card-body mx-auto">
-            <p>Upload an Image</p>
+            <h3>Upload an Image</h3>
             <form method= "post" action= "home.php" enctype="multipart/form-data">
               <div class="form-group">
                 <input type="file" class="form-control-file" id="image-upload" name="image_upload" accept="image/*">
               </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+              <h3>Choose Tag</h3>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="memes" checked>
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    memes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="pets">
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    pets
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" value="sports">
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    sports
+                  </label>
+                </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
             </form>
 
           </div>
@@ -309,6 +333,21 @@
         const deleteForm = document.createElement("form");
         deleteForm.method = "post";
 
+        const tagBtn = document.createElement("button");
+        tagBtn.type = "button";
+        console.log(post.tag);
+        if (post.tag == 'memes') {
+          tagBtn.classList.add("btn", "btn-primary");
+          tagBtn.textContent = 'memes';
+        } else if (post.tag == 'pets') {
+          tagBtn.classList.add("btn", "btn-success");
+          tagBtn.textContent = 'pets';
+        } else if (post.tag == 'sports') {
+          tagBtn.classList.add("btn", "btn-danger");
+          tagBtn.textContent = 'sports';
+        }
+        
+
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
         deleteBtn.classList.add("btn");
@@ -342,6 +381,7 @@
         viewComments.addEventListener("click",() => showComments(viewComments));
 
         deleteForm.appendChild(deleteBtn);
+        buttonContainer.appendChild(tagBtn);
         buttonContainer.appendChild(viewComments);
         buttonContainer.appendChild(deleteForm);
         
